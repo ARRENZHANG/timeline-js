@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head> 
+        <script type="text/javascript" src="jquery-3.4.0.min.js"></script>  
+        <script type="text/javascript" src="timeline.js"></script>     
+        <link rel="stylesheet" href="timeline.css" type="text/css">    
+        <title>Timeline DEMO</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="padding:8px 24px;">
+        <div id="timeline_ts" style="height:128px;line-height:128px;text-align:center;"></div>
+        <div id="timeline" class="timeline" style="height:64px;"></div>
+<script type="text/javascript">
+new Timeline("timeline",{time:new Date().getTime(),days:7,hours:3,"mark_selected":true,"mark_time":true,"limit":true,"animate":true},{
+    onTimeSelected:function(ts){
+        document.getElementById("timeline_ts").innerHTML = new Date(ts).toString();
+    }
+});
+</script> 
+    </body>
+</html>

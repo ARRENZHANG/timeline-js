@@ -1,0 +1,42 @@
+/*@author : arrenzhang
+ *@email : arrenzhang@qq.com
+ *@version : 0.5.1
+ ****/
+ div.timeline{user-select:none;moz-user-select:none;overflow:hidden;background-color:#ddd;padding:0px;box-sizing:border-box;}
+div.timeline div{font-size:16pt;font-family:'Microsoft YaHei','monospace';}
+div.timeline div.days,
+div.timeline div.hours{position:relative;height:100%;overflow:hidden;min-height:24px;box-sizing:border-box;}
+
+div.timeline div.days div.day{position:absolute;background-color:#eee;text-align:center;cursor:pointer;box-sizing:border-box;}
+div.timeline div.days div.day.labeled{}
+div.timeline div.days div.day:nth-child(2n+1){background-color:#e0e0e0;}
+div.timeline div.days div.day:hover{background-color:#000;color:white;}
+div.timeline div.days div.day div.day_value{font-weight:bold;}
+div.timeline div.days div.day.current div.day_value{color:#009933;}
+div.timeline div.days div.day.labeled div.day_value{position:absolute;bottom:2px;width:100%;line-height:100%;}
+div.timeline div.days div.day div.day_label{position:absolute;width:100%;top:0px;box-sizing:border-box;}
+div.timeline div.days div.day div.day_label div.year{background-color:#333;}
+div.timeline div.days div.day div.day_label div.month{background-color:#555;}
+div.timeline div.days div.day div.day_label div.year,
+div.timeline div.days div.day div.day_label div.month{font-size:65%;font-weight:bold;line-height:100%;height:auto;padding:2px 0px;white-space:nowrap;color:#ddd;}
+
+div.timeline div.hours div.hours_anchor{position:absolute;z-index:90;top:0px;height:100%;width:2px;background-color:#009933;box-sizing:border-box;}
+div.timeline div.hours div.hours_current{position:absolute;z-index:80;font-size:70%;background-color:#009933;color:#fff;white-space:nowrap;
+    border-radius:0px;height:15pt;line-height:15pt;padding:0px 2px;box-sizing:border-box;}
+div.timeline div.hours.over div.hours_anchor{background-color:#ffcc00;}
+div.timeline div.hours.over div.hours_current{background-color:#ffcc00;}
+    
+div.timeline div.hours div.hours_mark{position:absolute;z-index:70;top:0px;height:100%;width:2px;background-color:red;box-sizing:border-box;}
+div.timeline div.hours div.hours_mark_value{position:absolute;z-index:60;font-size:70%;background-color:red;color:#fff;white-space:nowrap;
+    border-radius:0px;height:15pt;line-height:15pt;padding:0px 2px;box-sizing:border-box;}
+    
+div.timeline div.hours div.hour{position:absolute;text-align:center;cursor:default;box-sizing:border-box;background-color:#eee;}
+div.timeline div.hours div.hour.labeled{}
+div.timeline div.hours div.hour:nth-child(2n+1){background-color:#e0e0e0;}
+div.timeline div.hours div.hour div.hour_value{font-weight:bold;text-align:left;}
+div.timeline div.hours div.hour.current div.hour_value{color:#009933;}
+div.timeline div.hours div.hour.labeled div.hour_value{}
+div.timeline div.hours div.hour div.hour_label{position:absolute;width:100%;top:0px;font-size:65%;font-weight:bold;padding:2px 0px;line-height:100%;height:auto;
+                                               text-align:center;white-space:nowrap;
+                                               background-color:#333;color:#ddd;box-sizing:border-box;}
+div.timeline div.hours div.hour div.hour_label.current{background-color:#009933;}
