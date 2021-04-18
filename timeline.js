@@ -1,6 +1,7 @@
 /*@author : arrenzhang
  *@email : arrenzhang@qq.com 
  *@version : 0.5.1
+ *@summary : Helps creating a timeline component on web page, and users could choose a timestamp on that timeline by clicking with mouse left button.
  ****/
 var Timeline=function(elID,
         attrs /* { time:millis,days:nnn,hours:nnn,mark_time:true|false,mark_selected:true|false,limit:true|false,animate:true|false,time_limit:millis} */,
@@ -14,7 +15,7 @@ element_days,element_hours;
 var
 container_width,container_height;
 var
-animation_timeout=typeof(props["animate"])!=="undefined" && false===props["animate"] ? 0 : 250;
+animation_timeout=typeof(props["animate"])!=="undefined" && true!==props["animate"] ? 0 : 250;
 var
 limit_on_select=typeof(props["limit"])!=="undefined" && true===props["limit"];
 var
@@ -203,7 +204,7 @@ element_days_on_selected=function(event)
     var current=parseInt($(this).attr("timestamp"));
     (cbs["onDateSelected"]||nop).apply(this_,[current]);
     
-    if( typeof(props["hours"])!=="undefined" )
+    if( typeof(props["hours"])!=="undefined" && !isNaN(props["hours"]) ) /* will display hours-panel on screen */
     {
         element_days.hide(animation_timeout);
         element_hours=$("<div class='hours'></div>").appendTo(element);
@@ -217,8 +218,8 @@ var hours_marked;
 var
 element_hours_init=function(start,hours)
 {
-    if( typeof(props["mark_time"])!=="undefined" && props["mark_time"]===true ){
-        delete props["mark_time"];
+    if( typeof(props["mark_time"])!=="undefined" && props["mark_time"]===true ){ /* mark initial timestamp on timeline ? */
+        delete props["mark_time"]; /* we don't mark it everytime this component is shown ! */
         hours_marked = parseInt(props["time"]);
     }   
     
@@ -286,7 +287,7 @@ element_hours_init_render=function(start,hours)
     var anch = $("<div class='hours_current'></div>").css({"left":-900}).appendTo(element_hours);
         anch.css({"top":container_height-anch.height()});
     
-    if( typeof(props["mark_selected"])!=="undefined" )
+    if( typeof(props["mark_selected"])!=="undefined" && true===props["mark_selected"] )
 	{
         element_hours.append($("<div class='hours_mark'></div>").css("left",-900));
         var marked=$("<div class='hours_mark_value'></div>").css({"left":-900}).appendTo(element_hours);
@@ -326,7 +327,7 @@ element_hours_resize=function()
     }
     element_hours_display_marked();
 },
-element_hours_on_zoom=function(event,step)
+element_hours_on_zoom=function(event,step) /* we created new component-for-hours when been zoomed */
 {
     var els=element_hours.children("div.hour");
     var hours=els.length;
@@ -348,7 +349,7 @@ element_hours_on_zoom=function(event,step)
 			start = selected<(parseInt(first.attr("timestamp"))+parseInt(last.attr("timestamp_end")))/2
 				? fst_ts
 				: fst_ts+3600*1000;
-		} else {
+		} else { /* zoom out */
 			start = selected<(parseInt(first.attr("timestamp"))+parseInt(last.attr("timestamp_end")))/2
 				? fst_ts
 				: fst_ts-3600*1000;
@@ -471,7 +472,7 @@ element_hours_display_marked=function()
 },
 element_hours_on_click=function(event)
 {
-    if( event.which===1 )
+    if( event.which===1 ) /* choose timestamp at given point by clicking with left-button */
     {
 		var target=$(this),one=target.get(0);
 		var offset=event.clientX-(one.clientLeft||one.offsetLeft);
@@ -484,7 +485,7 @@ element_hours_on_click=function(event)
 		
 		(cbs["onTimeSelected"]||nop).apply(this_,[current]);
     }
-    else if( event.which===3 && element_days ){ /* right-click */
+    else if( event.which===3 && element_days ){ /* right-click ? go back to days-panel */
         element_hours_back(event);
     }
 };
