@@ -12,7 +12,7 @@
         <div id="timeline_ts" style="height:128px;line-height:128px;text-align:center;"></div>
         <div id="timeline" class="timeline" style="height:64px;"></div>
 <script type="text/javascript">
-new Timeline("timeline",{time:new Date().getTime(),days:7,hours:3,"mark_selected":true,"mark_time":true,"limit":true,"animate":true},{
+new Timeline("timeline",{time:new Date().getTime(),days:7,hours:3,"mark_selected":true,"mark_time":true,"limit":true,"time_limit":0,"animate":true},{
     onTimeSelected:function(ts){
         document.getElementById("timeline_ts").innerHTML = new Date(ts).toString();
     }
