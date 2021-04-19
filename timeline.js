@@ -17,9 +17,9 @@ container_width,container_height;
 var
 animation_timeout=typeof(props["animate"])!=="undefined" && true!==props["animate"] ? 0 : 250;
 var
-limit_on_select=typeof(props["limit"])!=="undefined" && true===props["limit"];
+limit_on_select=typeof(props["limit"])!=="undefined" && true===props["limit"]; /* will not display times exceed this given point */
 var
-limit_time=typeof(props["time_limit"])!=="undefined" ? parseInt(props["time_limit"]) : 0;
+time_end_limit=typeof(props["time_limit"])!=="undefined" ? parseInt(props["time_limit"]) : 0; /* limited end time of timeline */
 
 var
 nop=function()
@@ -36,7 +36,7 @@ on_container_size_changed=function()
         element_days_resize();
     if( element_hours )
         element_hours_resize();
-},    
+},
 init0=function()
 {
     $(window).on("resize",on_container_size_changed);
@@ -48,7 +48,7 @@ init0=function()
     }
     else
     {
-        element_hours=$("<div class='hours'></div>").appendTo(element);
+        element_hours_create_panel();
         element_hours_init(parseInt(props["time"]),parseInt(props["hours"]||"8"));
     }
 };
@@ -65,7 +65,7 @@ same_hour=function(a,b){
 checkDateScope=function(start,days)
 {
     var end = start+days*24*3600*1000;
-    var limit = limit_time ? limit_time : new Date().getTime();
+    var limit = time_end_limit ? time_end_limit : new Date().getTime();
     if( end>limit ){
         start = limit-(days-1)*24*3600*1000;
     }
@@ -74,7 +74,8 @@ checkDateScope=function(start,days)
 checkTimeScope=function(start,hours)
 {
     var end = start+hours*3600*1000;
-    var limit_date = limit_time ? new Date(limit_time) : new Date(), limit = limit_date.getTime();
+    var limit_date = time_end_limit ? new Date(time_end_limit) : new Date();
+    var limit = limit_date.getTime();
     if( end>limit ){
         limit_date.setMinutes(0);
         limit_date.setSeconds(0);
@@ -207,7 +208,7 @@ element_days_on_selected=function(event)
     if( typeof(props["hours"])!=="undefined" && !isNaN(props["hours"]) ) /* will display hours-panel on screen */
     {
         element_days.hide(animation_timeout);
-        element_hours=$("<div class='hours'></div>").appendTo(element);
+        element_hours_create_panel();
         element_hours_init(current,parseInt(props["hours"])); 
     }
 };
@@ -216,6 +217,11 @@ element_days_on_selected=function(event)
 var hours_history_time;
 var hours_marked;
 var
+element_hours_create_panel=function()
+{
+    element_hours=$("<div class='hours'></div>").appendTo(element);
+    return element_hours;
+},
 element_hours_init=function(start,hours)
 {
     if( typeof(props["mark_time"])!=="undefined" && props["mark_time"]===true ){ /* mark initial timestamp on timeline ? */
@@ -360,8 +366,8 @@ element_hours_on_zoom=function(event,step) /* we created new component-for-hours
 			dt.setSeconds(0);
 			dt.setMilliseconds(0);
 			
-        element_hours.remove();
-        element_hours=$("<div class='hours'></div>").appendTo(element);
+        element_hours.remove(); /* destroy old hours-panel, and will create new panel on page */
+        element_hours_create_panel();
 		element_hours_init_render( dt.getTime(),hours_new );
     }
 },
@@ -383,7 +389,7 @@ element_hours_on_scroll=function(event)
 		element_hours_adjust_each(scope[0],els);
 		element_hours_display_marked();
 	}
-	element_hours_on_mouse_move( event,null,null,null,element_hours );
+	element_hours_on_mouse_move( event,null,null,null,element_hours ); /* triggers an mouse-move event for displaying time of where mice located */
 },
 element_hours_adjust_each=function(start,els)
 {
@@ -466,7 +472,7 @@ element_hours_display_marked=function()
         }
         else
         {
-            $("div.hours_mark,div.hours_mark_value",element_hours).css({"left":-900});
+            $("div.hours_mark,div.hours_mark_value",element_hours).css({"left":-900}); /* make it invisible for MARK component */
         }    
     }
 },
@@ -485,7 +491,8 @@ element_hours_on_click=function(event)
 		
 		(cbs["onTimeSelected"]||nop).apply(this_,[current]);
     }
-    else if( event.which===3 && element_days ){ /* right-click ? go back to days-panel */
+    else if( event.which===3 && element_days ) /* right-click ? go back to days-panel */
+    {
         element_hours_back(event);
     }
 };
@@ -500,10 +507,16 @@ var format2ts=function(dt)
     return label;
 };
 
-this.destroy=function()
+this.destroy=function() /* after invoked this method, you SHOULD WILL NOT do anything with this object ! */
 {
-    if( element_days ) element_days.remove();
-    if( element_hours ) element_hours.remove();
+    if( element_days ){
+        element_days.remove();
+        element_days = null;
+    }
+    if( element_hours ){
+        element_hours.remove();
+        element_hours = null;
+    }
 };
 
 init0(); };
